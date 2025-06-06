@@ -20,4 +20,5 @@ This project provides a docker-compose stack with the following services:
    Keycloak login page. After authentication you can reach the simple
    confirmation page at `/online` which displays `TU ES ONLINE`.
 4. The service status table is available at `http://localhost/status/` and lists
-   each service with a link to its interface.
+   each service with a link to its interface. `Elasticsearch` can now also be
+   reached via `/elastic/` in addition to `/elasticsearch/`.
