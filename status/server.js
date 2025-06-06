@@ -26,13 +26,49 @@ async function checkHttp(url) {
 }
 
 const checks = [
-  { name: 'PostgreSQL', type: 'tcp', host: 'postgres', port: 5432 },
-  { name: 'Keycloak', type: 'http', url: 'http://keycloak:8080' },
-  { name: 'Elasticsearch', type: 'http', url: 'http://elasticsearch:9200' },
-  { name: 'Kibana', type: 'http', url: 'http://kibana:5601' },
-  { name: 'Prometheus', type: 'http', url: 'http://prometheus:9090/-/ready' },
-  { name: 'Grafana', type: 'http', url: 'http://grafana:3000' },
-  { name: 'NGINX', type: 'http', url: 'http://nginx' },
+  {
+    name: 'PostgreSQL',
+    type: 'tcp',
+    host: 'postgres',
+    port: 5432,
+    ui: null,
+  },
+  {
+    name: 'Keycloak',
+    type: 'http',
+    url: 'http://keycloak:8080',
+    ui: '/keycloak/',
+  },
+  {
+    name: 'Elasticsearch',
+    type: 'http',
+    url: 'http://elasticsearch:9200',
+    ui: '/elasticsearch/',
+  },
+  {
+    name: 'Kibana',
+    type: 'http',
+    url: 'http://kibana:5601',
+    ui: '/kibana/',
+  },
+  {
+    name: 'Prometheus',
+    type: 'http',
+    url: 'http://prometheus:9090/-/ready',
+    ui: '/prometheus/',
+  },
+  {
+    name: 'Grafana',
+    type: 'http',
+    url: 'http://grafana:3000',
+    ui: '/grafana/',
+  },
+  {
+    name: 'NGINX',
+    type: 'http',
+    url: 'http://nginx',
+    ui: '/',
+  },
 ];
 
 async function getStatuses() {
@@ -44,7 +80,7 @@ async function getStatuses() {
       } else {
         online = await checkHttp(c.url);
       }
-      return { name: c.name, online };
+      return { name: c.name, online, ui: c.ui };
     })
   );
 }
@@ -58,13 +94,17 @@ app.get('/', async (_req, res) => {
 <body>
 <h1>Service Status</h1>
 <table border="1" cellspacing="0" cellpadding="4">
-<tr><th>Service</th><th>Status</th></tr>
+<tr><th>Service</th><th>Status</th><th>URL</th></tr>
 ${statuses
-  .map((s) => `<tr><td>${s.name}</td><td>${s.online ? 'online' : 'offline'}</td></tr>`) 
+  .map((s) => `<tr><td>${s.name}</td><td>${s.online ? 'online' : 'offline'}</td><td>${s.ui ? `<a href="${s.ui}">${s.ui}</a>` : ''}</td></tr>`)
   .join('\n')}
 </table>
 </body>
 </html>`);
+});
+
+app.get('/online', (_req, res) => {
+  res.send('<h1>TU ES ONLINE</h1>');
 });
 
 const port = 3001;
