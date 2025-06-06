@@ -16,6 +16,8 @@ This project provides a docker-compose stack with the following services:
    ```bash
    docker compose up -d
    ```
-3. Visit `http://localhost` in your browser to see the status page.
-
-The status page will list each service and whether it is reachable (online/offline).
+3. Open `http://localhost` in your browser. You will be redirected to the
+   Keycloak login page. After authentication you can reach the simple
+   confirmation page at `/online` which displays `TU ES ONLINE`.
+4. The service status table is available at `http://localhost/status/` and lists
+   each service with a link to its interface.
