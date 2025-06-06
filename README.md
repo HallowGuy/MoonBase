@@ -18,4 +18,4 @@ This project provides a docker-compose stack with the following services:
    ```
 3. Visit `http://localhost` in your browser to see the status page.
 
-The status page will list each service and whether it is reachable (online/offline).
+The status page lists each service, whether it is reachable (online/offline), and provides the service URL when it is online.

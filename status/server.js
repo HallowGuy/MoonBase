@@ -26,11 +26,17 @@ async function checkHttp(url) {
 }
 
 const checks = [
-  { name: 'PostgreSQL', type: 'tcp', host: 'postgres', port: 5432 },
+  {
+    name: 'PostgreSQL',
+    type: 'tcp',
+    host: 'postgres',
+    port: 5432,
+    url: 'postgres://postgres:5432',
+  },
   { name: 'Keycloak', type: 'http', url: 'http://keycloak:8080' },
   { name: 'Elasticsearch', type: 'http', url: 'http://elasticsearch:9200' },
   { name: 'Kibana', type: 'http', url: 'http://kibana:5601' },
-  { name: 'Prometheus', type: 'http', url: 'http://prometheus:9090/-/ready' },
+  { name: 'Prometheus', type: 'http', url: 'http://prometheus:9090' },
   { name: 'Grafana', type: 'http', url: 'http://grafana:3000' },
   { name: 'NGINX', type: 'http', url: 'http://nginx' },
 ];
@@ -44,7 +50,7 @@ async function getStatuses() {
       } else {
         online = await checkHttp(c.url);
       }
-      return { name: c.name, online };
+      return { name: c.name, online, url: c.url };
     })
   );
 }
@@ -57,12 +63,15 @@ app.get('/', async (_req, res) => {
 <head><title>Service Status</title></head>
 <body>
 <h1>Service Status</h1>
-<table border="1" cellspacing="0" cellpadding="4">
-<tr><th>Service</th><th>Status</th></tr>
-${statuses
-  .map((s) => `<tr><td>${s.name}</td><td>${s.online ? 'online' : 'offline'}</td></tr>`) 
-  .join('\n')}
-</table>
+  <table border="1" cellspacing="0" cellpadding="4">
+  <tr><th>Service</th><th>Status</th><th>URL</th></tr>
+  ${statuses
+    .map((s) =>
+      `<tr><td>${s.name}</td><td>${s.online ? 'online' : 'offline'}</td>` +
+      `<td>${s.online && s.url ? `<a href="${s.url}">${s.url}</a>` : '-'}</td></tr>`
+    )
+    .join('\n')}
+  </table>
 </body>
 </html>`);
 });
