@@ -2,17 +2,20 @@
 
 This project provides a docker-compose stack with the following services:
 
-- **PostgreSQL** – database
-- **Keycloak** – authentication. The database schema is reset on each start and
-  the realm from `keycloak/keycloak-realm.json` is re-imported automatically.
+- **PostgreSQL** – database with two schemas: `keycloak` for Keycloak and
+  `app` for the application tables.
+- **Keycloak** – authentication. The `keycloak` schema is reset on each start
+  and the realm from `keycloak/keycloak-realm.json` is re-imported
+  automatically.
 - **Elasticsearch** and **Kibana** – logging and search
 - **Prometheus** and **Grafana** – monitoring
 - **NGINX** – reverse proxy
 - **Status page** – simple web page displaying service status
 - **Backend** – Go service powered by Echo
 - **Frontend** – React/Next.js UI styled with Tailwind CSS
-- The PostgreSQL instance initializes a database named `system_database`
-  containing a single table called `users`.
+- The PostgreSQL instance initializes a database named `system_database`.
+  Application tables live under the `app` schema and Keycloak stores its data
+  in the `keycloak` schema.
 
 ## Usage
 
