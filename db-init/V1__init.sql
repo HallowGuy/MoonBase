@@ -1,15 +1,9 @@
--- V1__init.sql
+CREATE SCHEMA IF NOT EXISTS app;
 
-CREATE TABLE IF NOT EXISTS user_account (
+CREATE TABLE IF NOT EXISTS app.users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255),
     nbre_de_connexions INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS migration_model (
-    id SERIAL PRIMARY KEY,
-    version VARCHAR(50) NOT NULL,
-    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

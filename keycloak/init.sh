@@ -15,4 +15,4 @@ DROP SCHEMA IF EXISTS "$SCHEMA" CASCADE;
 CREATE SCHEMA "$SCHEMA";
 SQL
 
-exec /opt/keycloak/bin/kc.sh start-dev --import-realm
+exec /opt/keycloak/bin/kc.sh start-dev --db-schema="$SCHEMA" --import-realm
