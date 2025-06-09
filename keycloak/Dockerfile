@@ -10,3 +10,4 @@ COPY keycloak-realm.json ./data/import/keycloak-realm.json
 # Ensure the init script is executable and use it as the entrypoint.
 RUN chmod +x init.sh
 ENTRYPOINT ["./init.sh"]
+

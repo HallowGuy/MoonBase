@@ -25,6 +25,7 @@ This project provides a docker-compose stack with the following services:
    which now resolves database parameters from `KC_DB_URL` and calls Keycloak
    via a relative path, so the setup works regardless of the installation
    location:
+
    ```bash
    docker compose up -d
    ```
