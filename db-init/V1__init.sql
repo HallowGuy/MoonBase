@@ -1,0 +1,15 @@
+-- V1__init.sql
+
+CREATE TABLE IF NOT EXISTS user_account (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255),
+    nbre_de_connexions INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS migration_model (
+    id SERIAL PRIMARY KEY,
+    version VARCHAR(50) NOT NULL,
+    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

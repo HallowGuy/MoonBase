@@ -1,6 +1,0 @@
-CREATE TABLE IF NOT EXISTS users (
-  id SERIAL PRIMARY KEY,
-  username TEXT NOT NULL,
-  email TEXT NOT NULL UNIQUE,
-  nbre_de_connexions INTEGER NOT NULL DEFAULT 0
-);
