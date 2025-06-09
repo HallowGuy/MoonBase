@@ -22,15 +22,13 @@ services:
       - ./db-init:/flyway/sql
 
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0
+    build: ./keycloak
     restart: unless-stopped
-    command: /opt/keycloak/init.sh
     volumes:
-      - ./keycloak:/opt/keycloak/data/import
-      - ./keycloak/init.sh:/opt/keycloak/init.sh:ro
+      - ./keycloak/keycloak-realm.json:/opt/keycloak/data/import/keycloak-realm.json:ro
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/system_database
+      KC_DB_URL: jdbc:postgresql://postgres:5432/system_database?currentSchema=keycloak
       KC_DB_USERNAME: user
       KC_DB_PASSWORD: pass
       KC_DB_SCHEMA: keycloak
