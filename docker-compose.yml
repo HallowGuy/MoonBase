@@ -24,14 +24,16 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:23.0
     restart: unless-stopped
-    command: start-dev --import-realm
+    command: /opt/keycloak/init.sh
     volumes:
       - ./keycloak:/opt/keycloak/data/import
+      - ./keycloak/init.sh:/opt/keycloak/init.sh:ro
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/system_database
       KC_DB_USERNAME: user
       KC_DB_PASSWORD: pass
+      KC_DB_SCHEMA: keycloak
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     depends_on:
