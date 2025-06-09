@@ -22,3 +22,5 @@ This project provides a docker-compose stack with the following services:
 4. The service status table is available at `http://localhost/status/` and lists
    each service with a link to its interface. `Elasticsearch` can now also be
    reached via `/elastic/` in addition to `/elasticsearch/`.
+   Grafana, Prometheus and Kibana are served from `/grafana/`, `/prometheus/`
+   and `/kibana/` respectively after logging into Keycloak.

@@ -36,12 +36,17 @@ services:
     image: docker.elastic.co/kibana/kibana:7.17.10
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - SERVER_BASEPATH=/kibana
+      - SERVER_REWRITEBASEPATH=true
     depends_on:
       - elasticsearch
     restart: unless-stopped
 
   prometheus:
     image: prom/prometheus:latest
+    command:
+      - '--web.route-prefix=/prometheus'
+      - '--web.external-url=http://localhost/prometheus'
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     restart: unless-stopped
