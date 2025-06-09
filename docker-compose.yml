@@ -24,7 +24,9 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:23.0
     restart: unless-stopped
-    command: start-dev
+    command: start-dev --import-realm
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/system_database

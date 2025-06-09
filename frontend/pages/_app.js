@@ -6,8 +6,8 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     const keycloak = new Keycloak({
       url: '/keycloak/',
-      realm: 'master',
-      clientId: 'account',
+      realm: 'moonbase',
+      clientId: 'frontend',
     });
     keycloak.init({ onLoad: 'login-required' }).then((authenticated) => {
       if (authenticated && keycloak.tokenParsed) {
