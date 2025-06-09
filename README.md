@@ -3,7 +3,7 @@
 This project provides a docker-compose stack with the following services:
 
 - **PostgreSQL** – database
-- **Keycloak** – authentication
+- **Keycloak** – authentication (importing `keycloak/keycloak-realm.json` on startup)
 - **Elasticsearch** and **Kibana** – logging and search
 - **Prometheus** and **Grafana** – monitoring
 - **NGINX** – reverse proxy
@@ -20,6 +20,9 @@ This project provides a docker-compose stack with the following services:
    ```bash
    docker compose up -d
    ```
+   Keycloak will automatically import the realm definition from
+   `./keycloak/keycloak-realm.json`, which registers the `frontend` and
+   `backend` clients.
 3. Open `http://localhost` in your browser. You will be redirected to the
    Keycloak login page. After authentication you can reach the simple
    confirmation page at `/online` which displays `TU ES ONLINE`.

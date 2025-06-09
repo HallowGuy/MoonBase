@@ -1,0 +1,21 @@
+{
+  "realm": "moonbase",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "frontend",
+      "publicClient": true,
+      "redirectUris": [
+        "http://localhost/app/*"
+      ],
+      "webOrigins": [
+        "http://localhost"
+      ],
+      "rootUrl": "http://localhost/app/"
+    },
+    {
+      "clientId": "backend",
+      "bearerOnly": true
+    }
+  ]
+}
