@@ -21,8 +21,11 @@ This project provides a docker-compose stack with the following services:
 
 1. Ensure Docker and Docker Compose are installed.
 2. Run the stack. Docker Compose will build a small Keycloak image using
-   `keycloak/Dockerfile` so that our `init.sh` script runs before Keycloak
-   starts:
+   `keycloak/Dockerfile`. The container launches our `init.sh` script first
+   which now resolves database parameters from `KC_DB_URL` and calls Keycloak
+   via a relative path, so the setup works regardless of the installation
+   location:
+
    ```bash
    docker compose up -d
    ```
