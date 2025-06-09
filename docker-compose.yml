@@ -77,6 +77,8 @@ services:
 
   backend:
     build: ./backend
+    environment:
+      DATABASE_URL: postgres://user:pass@postgres:5432/system_database?sslmode=disable
     depends_on:
       - postgres
 
