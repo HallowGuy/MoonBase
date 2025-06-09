@@ -20,7 +20,9 @@ This project provides a docker-compose stack with the following services:
 ## Usage
 
 1. Ensure Docker and Docker Compose are installed.
-2. Run the stack:
+2. Run the stack. Docker Compose will build a small Keycloak image using
+   `keycloak/Dockerfile` so that our `init.sh` script runs before Keycloak
+   starts:
    ```bash
    docker compose up -d
    ```
