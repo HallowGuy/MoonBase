@@ -6,9 +6,10 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
-      POSTGRES_DB: appdb
+      POSTGRES_DB: system_database
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d
 
   keycloak:
     image: quay.io/keycloak/keycloak:23.0
@@ -16,7 +17,7 @@ services:
     command: start-dev
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/appdb
+      KC_DB_URL: jdbc:postgresql://postgres:5432/system_database
       KC_DB_USERNAME: user
       KC_DB_PASSWORD: pass
       KEYCLOAK_ADMIN: admin
@@ -73,6 +74,16 @@ services:
       - kibana
       - prometheus
       - grafana
+
+  backend:
+    build: ./backend
+    depends_on:
+      - postgres
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - keycloak
 
   nginx:
     image: nginx:latest

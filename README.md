@@ -8,6 +8,10 @@ This project provides a docker-compose stack with the following services:
 - **Prometheus** and **Grafana** – monitoring
 - **NGINX** – reverse proxy
 - **Status page** – simple web page displaying service status
+- **Backend** – Go service powered by Echo
+- **Frontend** – React/Next.js UI styled with Tailwind CSS
+- The PostgreSQL instance initializes a database named `system_database`
+  containing a single table called `users`.
 
 ## Usage
 
@@ -24,3 +28,5 @@ This project provides a docker-compose stack with the following services:
    reached via `/elastic/` in addition to `/elasticsearch/`.
    Grafana, Prometheus and Kibana are served from `/grafana/`, `/prometheus/`
    and `/kibana/` respectively after logging into Keycloak.
+5. The application UI is served from `/app/` and the API endpoint returning
+   "Welcome to the home page" is available at `/api/home`.

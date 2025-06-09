@@ -64,6 +64,18 @@ const checks = [
     ui: '/grafana/',
   },
   {
+    name: 'Backend',
+    type: 'http',
+    url: 'http://backend:8080/api/home',
+    ui: '/api/home',
+  },
+  {
+    name: 'Frontend',
+    type: 'http',
+    url: 'http://frontend:3000',
+    ui: '/app/',
+  },
+  {
     name: 'NGINX',
     type: 'http',
     url: 'http://nginx',
