@@ -1,4 +1,7 @@
+// Simple status page service used to check the availability of other
+// containers in the compose stack.
 const express = require('express');
+// checkPort resolves to true if the TCP port is reachable.
 const net = require('net');
 
 function checkPort(host, port) {
@@ -16,6 +19,7 @@ function checkPort(host, port) {
   });
 }
 
+// checkHttp resolves to true if the HTTP endpoint returns 2xx.
 async function checkHttp(url) {
   try {
     const res = await fetch(url);
@@ -118,8 +122,9 @@ ${statuses
 app.get('/online', (_req, res) => {
   res.send('<h1>TU ES ONLINE</h1>');
 });
+// Default to port 3001 but allow overriding through PORT.
 
-const port = 3001;
+const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log('Status page listening on port', port);
 });
