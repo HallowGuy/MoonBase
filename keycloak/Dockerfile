@@ -1,13 +1,18 @@
 FROM quay.io/keycloak/keycloak:23.0
+
+# All files are placed inside the Keycloak home directory.
 WORKDIR /opt/keycloak
 
-# Copy the initialization script and realm file using paths
-# relative to the Keycloak home directory so that the image
-# works regardless of the absolute installation prefix.
-COPY init.sh ./init.sh
-COPY keycloak-realm.json ./data/import/keycloak-realm.json
+# Copy the initialization script explicitly to its final location.
+COPY init.sh /opt/keycloak/init.sh
 
-# Ensure the init script is executable and use it as the entrypoint.
-RUN chmod +x init.sh
-ENTRYPOINT ["./init.sh"]
+# Copy the realm definition that will be imported on start.
+COPY keycloak-realm.json /opt/keycloak/data/import/keycloak-realm.json
+
+# Ensure the init script has Unix line endings and is executable.
+RUN sed -i 's/\r$//' /opt/keycloak/init.sh \ 
+    && chmod +x /opt/keycloak/init.sh
+
+# Launch Keycloak via the init script using an absolute path.
+ENTRYPOINT ["/opt/keycloak/init.sh"]
 
