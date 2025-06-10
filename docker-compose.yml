@@ -3,9 +3,9 @@ services:
     image: postgres:15
     restart: unless-stopped
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DB: system_database
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pass}
+      POSTGRES_DB: ${POSTGRES_DB:-system_database}
       POSTGRES_HOST_AUTH_METHOD: trust  # à supprimer ou ajuster en production
     ports:
       - "5432:5432"
@@ -31,9 +31,9 @@ services:
     restart: unless-stopped
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/system_database?currentSchema=keycloak
-      KC_DB_USERNAME: user
-      KC_DB_PASSWORD: pass
+      KC_DB_URL: ${KC_DB_URL:-jdbc:postgresql://postgres:5432/system_database?currentSchema=keycloak}
+      KC_DB_USERNAME: ${KC_DB_USERNAME:-user}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD:-pass}
       KC_DB_SCHEMA: keycloak
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -95,7 +95,7 @@ services:
   backend:
     build: ./backend
     environment:
-      DATABASE_URL: postgres://user:pass@postgres:5432/system_database?sslmode=disable&search_path=app
+      DATABASE_URL: ${DATABASE_URL:-postgres://user:pass@postgres:5432/system_database?sslmode=disable&search_path=app}
     depends_on:
       - postgres
 

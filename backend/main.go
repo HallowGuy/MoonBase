@@ -1,5 +1,7 @@
 package main
 
+// Simple REST API demonstrating a Go backend using Echo and PostgreSQL.
+
 import (
 	"context"
 	"net/http"
@@ -13,10 +15,14 @@ type App struct {
 	db *pgxpool.Pool
 }
 
+// loginRequest represents the payload expected when a user logs in.
+
 type loginRequest struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 }
+
+// userLogin increments the login counter for a user and creates the user if not present.
 
 func (a *App) userLogin(c echo.Context) error {
 	var req loginRequest
@@ -36,7 +42,10 @@ func (a *App) userLogin(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
+// main initializes the database connection and starts the HTTP server.
+
 func main() {
+	// Database connection URL, e.g. postgres://user:pass@host:5432/db?search_path=app
 	dbURL := os.Getenv("DATABASE_URL")
 	pool, err := pgxpool.New(context.Background(), dbURL)
 	if err != nil {
@@ -51,5 +60,11 @@ func main() {
 		return c.String(http.StatusOK, "Welcome to the home page")
 	})
 	e.POST("/api/user/login", app.userLogin)
-	e.Logger.Fatal(e.Start(":8080"))
+
+	// Allow overriding the listening port via PORT
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	e.Logger.Fatal(e.Start(":" + port))
 }
