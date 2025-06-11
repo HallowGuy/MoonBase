@@ -1,0 +1,34 @@
+{
+  "realm": "T2",
+  "enabled": true,
+  "users": [
+    {
+      "username": "T2",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password",
+          "temporary": false
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "frontend",
+      "publicClient": true,
+      "redirectUris": [
+        "http://localhost/app/*"
+      ],
+      "webOrigins": [
+        "http://localhost"
+      ],
+      "rootUrl": "http://localhost/app/"
+    },
+    {
+      "clientId": "backend",
+      "bearerOnly": true
+    }
+  ]
+}
