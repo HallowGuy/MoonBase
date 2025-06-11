@@ -5,8 +5,9 @@ This project provides a docker-compose stack with the following services:
 - **PostgreSQL** – database with two schemas: `keycloak` for Keycloak and
   `app` for the application tables.
 - **Keycloak** – authentication. The `keycloak` schema is reset on each start
-  and the realm from `keycloak/keycloak-realm.json` is re-imported
-  automatically.
+  and the realms from `keycloak/keycloak-realm.json`, `keycloak/realm-t1.json`
+  and `keycloak/realm-t2.json` are re-imported automatically. The additional
+  realm files create tenants **T1** and **T2** with a single user each.
 - **Elasticsearch** and **Kibana** – logging and search
 - **Prometheus** and **Grafana** – monitoring
 - **NGINX** – reverse proxy
@@ -29,12 +30,15 @@ This project provides a docker-compose stack with the following services:
    ```bash
    docker compose up -d
    ```
-   Keycloak will reset its schema and then import the realm definition from
-   `./keycloak/keycloak-realm.json`, which registers the `frontend` and
-   `backend` clients.
+ Keycloak will reset its schema and then import the realm definitions from
+  `./keycloak/keycloak-realm.json`, `./keycloak/realm-t1.json` and
+  `./keycloak/realm-t2.json`. These files register the `frontend` and `backend`
+  clients and create one user in each tenant.
 3. Open `http://localhost` in your browser. You will be redirected to the
    Keycloak login page. After authentication you can reach the simple
    confirmation page at `/online` which displays `TU ES ONLINE`.
+   The example user credentials are `T1`/`password` for realm **T1** and
+   `T2`/`password` for realm **T2**.
 4. The service status table is available at `http://localhost/status/` and lists
    each service with a link to its interface. `Elasticsearch` can now also be
    reached via `/elastic/` in addition to `/elasticsearch/`.

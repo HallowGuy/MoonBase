@@ -39,6 +39,8 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
     volumes:
       - ./keycloak/keycloak-realm.json:/opt/keycloak/data/import/keycloak-realm.json:ro
+      - ./keycloak/realm-t1.json:/opt/keycloak/data/import/realm-t1.json:ro
+      - ./keycloak/realm-t2.json:/opt/keycloak/data/import/realm-t2.json:ro
     depends_on:
       - postgres
       - flyway
