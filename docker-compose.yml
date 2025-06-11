@@ -68,6 +68,25 @@ services:
       - elasticsearch
     restart: unless-stopped
 
+  fleet-server:
+    image: docker.elastic.co/beats/elastic-agent:7.17.10
+    container_name: fleet-server
+    user: root
+    ports:
+      - "8220:8220"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    environment:
+      FLEET_SERVER_ENABLE: "1"
+      FLEET_SERVER_ELASTICSEARCH_HOST: "http://elasticsearch:9200"
+      FLEET_URL: "http://172.0.0.1:8220"
+      FLEET_SERVER_SERVICE_TOKEN: "AAEAAWVsYXN0aWMvZmxlZXQtc2VydmVyL3Rva2VuLTE3NDk2NTg5Mzg2ODg6aG5yNnVHZDNTaHFSVmdIMFVpcE5WQQ"
+      FLEET_SERVER_POLICY_ID: "499b5aa7-d214-5b5d-838b-3cd76469844e"
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
   elastic-agent:
     image: docker.elastic.co/beats/elastic-agent:7.17.10
     user: root
