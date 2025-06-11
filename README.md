@@ -45,4 +45,29 @@ This project provides a docker-compose stack with the following services:
    Grafana, Prometheus and Kibana are served from `/grafana/`, `/prometheus/`
    and `/kibana/` respectively after logging into Keycloak.
 5. The application UI is served from `/app/` and the API endpoint returning
-   "Welcome to the home page" is available at `/api/home`.
+ "Welcome to the home page" is available at `/api/home`.
+
+## Indexing a website with App Search
+
+This stack can also connect to an Elastic App Search instance for web
+indexing. Assuming an App Search service is available at
+`http://localhost:3002`, configure Kibana and restart it:
+
+```yaml
+enterpriseSearch.host: 'http://localhost:3002'
+```
+
+Then restart the Kibana container:
+
+```bash
+docker compose restart kibana
+```
+
+Within Kibana navigate to **App Search** and create an engine. From there you
+can use the **Web Crawler** to index [`https://www.intalio.com`](https://www.intalio.com).
+
+### Troubleshooting
+
+- App Search and Kibana must point to the same Elasticsearch cluster.
+- Both services need the same authentication method.
+- Kibana's App Search UI does not support the Standard authentication mode.

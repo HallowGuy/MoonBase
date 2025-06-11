@@ -5,3 +5,6 @@ elasticsearch.hosts: ["http://elasticsearch:9200"]
 # Credentials to connect to secured Elasticsearch
 elasticsearch.username: "${ELASTIC_USERNAME:-elastic}"
 elasticsearch.password: "${ELASTIC_PASSWORD:-changeme}"
+
+# Connect Kibana to an App Search instance
+enterpriseSearch.host: "http://localhost:3002"
