@@ -49,6 +49,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.10
     environment:
       discovery.type: single-node
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     volumes:
       - esdata:/usr/share/elasticsearch/data
       - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
@@ -59,6 +60,8 @@ services:
     environment:
       SERVER_BASEPATH: /kibana
       SERVER_REWRITEBASEPATH: "true"
+      ELASTICSEARCH_USERNAME: ${ELASTIC_USERNAME:-elastic}
+      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     volumes:
       - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     depends_on:
