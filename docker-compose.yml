@@ -49,6 +49,7 @@ services:
       discovery.type: single-node
     volumes:
       - esdata:/usr/share/elasticsearch/data
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
     restart: unless-stopped
 
   kibana:
