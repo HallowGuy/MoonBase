@@ -55,9 +55,10 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana:7.17.10
     environment:
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
       SERVER_BASEPATH: /kibana
       SERVER_REWRITEBASEPATH: "true"
+    volumes:
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     depends_on:
       - elasticsearch
     restart: unless-stopped
