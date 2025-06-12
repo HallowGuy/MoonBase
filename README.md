@@ -2,21 +2,22 @@
 
 This project provides a docker-compose stack with the following services:
 
-- **PostgreSQL** – database with two schemas: `keycloak` for Keycloak and
-  `app` for the application tables.
+- **PostgreSQL** – database with schemas: `keycloak` for Keycloak, `app` for the
+  application tables and `grafana` for Grafana's own data.
 - **Keycloak** – authentication. The `keycloak` schema is reset on each start
   and the realms from `keycloak/keycloak-realm.json`, `keycloak/realm-t1.json`
   and `keycloak/realm-t2.json` are re-imported automatically. The additional
   realm files create tenants **T1** and **T2** with a single user each.
 - **Elasticsearch** and **Kibana** – logging and search
-- **Prometheus** and **Grafana** – monitoring
+- **Prometheus** and **Grafana** – monitoring. Grafana stores its dashboards in
+  the `grafana` schema.
 - **NGINX** – reverse proxy
 - **Status page** – simple web page displaying service status
 - **Backend** – Go service powered by Echo
 - **Frontend** – React/Next.js UI styled with Tailwind CSS
 - The PostgreSQL instance initializes a database named `system_database`.
-  Application tables live under the `app` schema and Keycloak stores its data
-  in the `keycloak` schema.
+  Application tables live under the `app` schema, Keycloak stores its data in
+  the `keycloak` schema and Grafana uses the `grafana` schema.
 
 ## Usage
 
