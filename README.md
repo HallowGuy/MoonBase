@@ -15,6 +15,12 @@ This project provides a docker-compose stack with the following services:
 - **Status page** – simple web page displaying service status
 - **Backend** – Go service powered by Echo
 - **Frontend** – React/Next.js UI styled with Tailwind CSS
+- **FileGator** – web file manager served from `/filegator/`
+- **Outline** – knowledge base accessible at `/outline/`
+- **Answer** – community Q&A at `/answer/`
+- **Typesense** – search engine used by Outline and Answer, API available at `/typesense/`
+- **Metabase** – analytics UI served from `/metabase/`
+- **Redis** – cache for Outline
 - The PostgreSQL instance initializes a database named `system_database`.
   Application tables live under the `app` schema, Keycloak stores its data in
   the `keycloak` schema and Grafana uses the `grafana` schema.
@@ -46,6 +52,23 @@ This project provides a docker-compose stack with the following services:
    and `/dashboards/` respectively after logging into Keycloak.
 5. The application UI is served from `/app/` and the API endpoint returning
 "Welcome to the home page" is available at `/api/home`.
+
+Additional modules are available once you clone the optional submodules:
+
+```bash
+git submodule update --init
+```
+
+They are served from the following paths after starting the stack:
+
+- FileGator: `http://localhost/filegator/`
+- Outline: `http://localhost/outline/`
+- Answer: `http://localhost/answer/`
+- Typesense API: `http://localhost/typesense/`
+- Metabase: `http://localhost/metabase/`
+
+Outline and Answer automatically connect to Typesense using the shared
+`TYPESENSE_API_KEY` environment variable defined in `docker-compose.yml`.
 
 ## Integrating OpenSearch with Keycloak
 
