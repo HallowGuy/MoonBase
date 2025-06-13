@@ -27,9 +27,9 @@ This project provides a docker-compose stack with the following services:
   Application tables live under the `app` schema, Keycloak stores its data in
   the `keycloak` schema and Grafana uses the `grafana` schema.
 
-Configuration for each module lives in a dedicated YAML file inside the
-`module-configs/` directory (for example `module-configs/formio.yml`). These
-files can be edited before launch to tweak service behavior.
+Configuration for each module lives in its own folder under `module-configs/`.
+For example the Form.io service uses `module-configs/formio/formio.yml`.
+These files can be edited before launch to tweak service behavior.
 
 ## Usage
 

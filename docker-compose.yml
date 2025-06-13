@@ -72,7 +72,7 @@ services:
         hard: -1
     volumes:
       - osdata:/usr/share/opensearch/data
-      - ./opensearch/opensearch.yml:/usr/share/opensearch/config/opensearch.yml:ro
+      - ./module-configs/opensearch/opensearch.yml:/usr/share/opensearch/config/opensearch.yml:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9200"]
@@ -87,7 +87,7 @@ services:
       SERVER_REWRITEBASEPATH: "true"
       OPENSEARCH_HOSTS: '["http://opensearch:${OPENSEARCH_PORT:-9200}"]'
     volumes:
-      - ./opensearch-dashboards/opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml:ro
+      - ./module-configs/opensearch-dashboards/opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml:ro
     depends_on:
       - opensearch
     restart: unless-stopped
@@ -104,7 +104,7 @@ services:
       - '--web.route-prefix=/prometheus'
       - '--web.external-url=http://localhost/prometheus'
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./module-configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090/-/ready"]
@@ -295,7 +295,7 @@ services:
       MONGO: mongodb://mongodb:27017/formio
       PORT: 3001
     volumes:
-      - ./formio/formio.yml:/data/formio.yml:ro
+      - ./module-configs/formio/formio.yml:/data/formio.yml:ro
     depends_on:
       - mongodb
     ports:
