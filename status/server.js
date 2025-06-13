@@ -80,6 +80,36 @@ const checks = [
     ui: '/app/',
   },
   {
+    name: 'Typesense',
+    type: 'http',
+    url: 'http://typesense:8108/health',
+    ui: '/typesense/',
+  },
+  {
+    name: 'FileGator',
+    type: 'http',
+    url: 'http://filegator',
+    ui: '/filegator/',
+  },
+  {
+    name: 'Outline',
+    type: 'http',
+    url: 'http://outline:3000',
+    ui: '/outline/',
+  },
+  {
+    name: 'Answer',
+    type: 'http',
+    url: 'http://answer',
+    ui: '/answer/',
+  },
+  {
+    name: 'Metabase',
+    type: 'http',
+    url: 'http://metabase:3000/api/health',
+    ui: '/metabase/',
+  },
+  {
     name: 'NGINX',
     type: 'http',
     url: 'http://nginx',

@@ -15,6 +15,11 @@ services:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   flyway:
     image: flyway/flyway:latest
@@ -56,6 +61,11 @@ services:
     depends_on:
       - postgres
       - flyway
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   opensearch:
     image: opensearchproject/opensearch:latest
@@ -69,6 +79,11 @@ services:
       - osdata:/usr/share/opensearch/data
       - ./opensearch/opensearch.yml:/usr/share/opensearch/config/opensearch.yml:ro
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:latest
@@ -81,6 +96,11 @@ services:
     depends_on:
       - opensearch
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5601/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   prometheus:
     image: prom/prometheus:latest
@@ -91,6 +111,11 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090/-/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   grafana:
     image: grafana/grafana:latest
@@ -115,6 +140,11 @@ services:
       - grafana_password
     volumes:
       - grafana-storage:/var/lib/grafana
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   status:
     build: ./status
@@ -127,6 +157,11 @@ services:
       - opensearch-dashboards
       - prometheus
       - grafana
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/online"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   backend:
     build: ./backend
@@ -134,11 +169,115 @@ services:
       DATABASE_URL: postgres://user:pass@postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-system_database}?sslmode=disable&search_path=app
     depends_on:
       - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/home"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   frontend:
     build: ./frontend
     depends_on:
       - keycloak
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  typesense:
+    image: typesense/typesense:latest
+    command: ["--data-dir", "/data", "--api-key", "${TYPESENSE_API_KEY:-secret}"]
+    volumes:
+      - typesense-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8108/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  filegator:
+    image: filegator/filegator:latest
+    depends_on:
+      - typesense
+    volumes:
+      - filegator-data:/var/www/filegator/repository
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  outline:
+    image: outlinewiki/outline:latest
+    environment:
+      DATABASE_URL: postgres://user:pass@postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-system_database}
+      DATABASE_SSL: "false"
+      REDIS_URL: redis://redis:6379
+      SECRET_KEY: "changeme"
+      UTILS_SECRET: "changeme"
+      URL: http://localhost/outline
+      TYPESENSE_API_KEY: ${TYPESENSE_API_KEY:-secret}
+      TYPESENSE_NODES: '[{"host":"typesense","port":8108,"protocol":"http"}]'
+    depends_on:
+      - postgres
+      - redis
+      - typesense
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  answer:
+    image: answerdev/answer:latest
+    environment:
+      DB_TYPE: postgresql
+      DB_DSN: postgres://user:pass@postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-system_database}?sslmode=disable
+      TYPESENSE_ENDPOINT: http://typesense:8108
+      TYPESENSE_API_KEY: ${TYPESENSE_API_KEY:-secret}
+    depends_on:
+      - postgres
+      - typesense
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  metabase:
+    image: metabase/metabase:latest
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: ${POSTGRES_DB:-system_database}
+      MB_DB_PORT: ${POSTGRES_PORT:-5432}
+      MB_DB_USER_FILE: /run/secrets/postgres_user
+      MB_DB_PASS_FILE: /run/secrets/postgres_password
+      MB_DB_HOST: postgres
+    secrets:
+      - postgres_user
+      - postgres_password
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   nginx:
     image: nginx:stable-alpine
@@ -154,11 +293,23 @@ services:
       - keycloak
       - prometheus
       - opensearch
+      - filegator
+      - outline
+      - answer
+      - metabase
+      - typesense
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 volumes:
   pgdata:
   osdata:
   grafana-storage:
+  typesense-data:
+  filegator-data:
 
 secrets:
   postgres_user:
