@@ -8,7 +8,7 @@ This project provides a docker-compose stack with the following services:
   and the realms from `keycloak/keycloak-realm.json`, `keycloak/realm-t1.json`
   and `keycloak/realm-t2.json` are re-imported automatically. The additional
   realm files create tenants **T1** and **T2** with a single user each.
-- **Elasticsearch** and **Kibana** – logging and search
+- **OpenSearch** and **OpenSearch Dashboards** – logging and search
 - **Prometheus** and **Grafana** – monitoring. Grafana stores its dashboards in
   the `grafana` schema.
 - **NGINX** – reverse proxy
@@ -41,34 +41,9 @@ This project provides a docker-compose stack with the following services:
    The example user credentials are `T1`/`password` for realm **T1** and
    `T2`/`password` for realm **T2**.
 4. The service status table is available at `http://localhost/status/` and lists
-   each service with a link to its interface. `Elasticsearch` can now also be
-   reached via `/elastic/` in addition to `/elasticsearch/`.
-   Grafana, Prometheus and Kibana are served from `/grafana/`, `/prometheus/`
-   and `/kibana/` respectively after logging into Keycloak.
+   each service with a link to its interface. `OpenSearch` can be reached at `/opensearch/` (alias `/elastic/`).
+   Grafana, Prometheus and OpenSearch Dashboards are served from `/grafana/`, `/prometheus/`
+   and `/dashboards/` respectively after logging into Keycloak.
 5. The application UI is served from `/app/` and the API endpoint returning
  "Welcome to the home page" is available at `/api/home`.
 
-## Indexing a website with App Search
-
-This stack can also connect to an Elastic App Search instance for web
-indexing. Assuming an App Search service is available at
-`http://localhost:3002`, configure Kibana and restart it:
-
-```yaml
-enterpriseSearch.host: 'http://localhost:3002'
-```
-
-Then restart the Kibana container:
-
-```bash
-docker compose restart kibana
-```
-
-Within Kibana navigate to **App Search** and create an engine. From there you
-can use the **Web Crawler** to index [`https://www.intalio.com`](https://www.intalio.com).
-
-### Troubleshooting
-
-- App Search and Kibana must point to the same Elasticsearch cluster.
-- Both services need the same authentication method.
-- Kibana's App Search UI does not support the Standard authentication mode.

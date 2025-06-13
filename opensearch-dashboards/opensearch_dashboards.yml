@@ -1,0 +1,5 @@
+server.host: "0.0.0.0"
+server.port: 5601
+server.basePath: "/dashboards"
+server.rewriteBasePath: true
+opensearch.hosts: ["http://opensearch:9200"]

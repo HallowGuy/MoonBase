@@ -44,16 +44,16 @@ const checks = [
     ui: '/keycloak/',
   },
   {
-    name: 'Elasticsearch',
+    name: 'OpenSearch',
     type: 'http',
-    url: 'http://elasticsearch:9200',
-    ui: '/elasticsearch/',
+    url: 'http://opensearch:9200',
+    ui: '/opensearch/',
   },
   {
-    name: 'Kibana',
+    name: 'OpenSearch Dashboards',
     type: 'http',
-    url: 'http://kibana:5601',
-    ui: '/kibana/',
+    url: 'http://opensearch-dashboards:5601',
+    ui: '/dashboards/',
   },
   {
     name: 'Prometheus',

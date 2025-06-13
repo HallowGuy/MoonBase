@@ -1,0 +1,4 @@
+plugins.security.disabled: true
+cluster.name: moonbase
+node.name: single-node
+network.host: 0.0.0.0
