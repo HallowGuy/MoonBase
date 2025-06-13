@@ -110,6 +110,19 @@ const checks = [
     ui: '/metabase/',
   },
   {
+    name: 'Form.io',
+    type: 'http',
+    url: 'http://formio:3001',
+    ui: '/formio/',
+  },
+  {
+    name: 'MongoDB',
+    type: 'tcp',
+    host: 'mongodb',
+    port: 27017,
+    ui: null,
+  },
+  {
     name: 'NGINX',
     type: 'http',
     url: 'http://nginx',

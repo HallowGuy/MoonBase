@@ -21,9 +21,15 @@ This project provides a docker-compose stack with the following services:
 - **Typesense** – search engine used by Outline and Answer, API available at `/typesense/`
 - **Metabase** – analytics UI served from `/metabase/`
 - **Redis** – cache for Outline
+- **Form.io** – form builder served from `/formio/`
+- **MongoDB** – backing database for Form.io
 - The PostgreSQL instance initializes a database named `system_database`.
   Application tables live under the `app` schema, Keycloak stores its data in
   the `keycloak` schema and Grafana uses the `grafana` schema.
+
+Configuration for each module lives in a dedicated YAML file inside the
+`module-configs/` directory (for example `module-configs/formio.yml`). These
+files can be edited before launch to tweak service behavior.
 
 ## Usage
 

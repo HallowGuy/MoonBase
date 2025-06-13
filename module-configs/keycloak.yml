@@ -1,0 +1,7 @@
+KC_DB: postgres
+KC_DB_URL: jdbc:postgresql://postgres:5432/system_database?currentSchema=keycloak
+KC_DB_USERNAME_FILE: /run/secrets/postgres_user
+KC_DB_PASSWORD_FILE: /run/secrets/postgres_password
+KC_DB_SCHEMA: keycloak
+KEYCLOAK_ADMIN_FILE: /run/secrets/keycloak_admin
+KEYCLOAK_ADMIN_PASSWORD_FILE: /run/secrets/keycloak_password

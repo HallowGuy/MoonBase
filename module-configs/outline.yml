@@ -1,0 +1,8 @@
+DATABASE_URL: postgres://user:pass@postgres:5432/system_database
+DATABASE_SSL: "false"
+REDIS_URL: redis://redis:6379
+SECRET_KEY: changeme
+UTILS_SECRET: changeme
+URL: http://localhost/outline
+TYPESENSE_API_KEY: secret
+TYPESENSE_NODES: '[{"host":"typesense","port":8108,"protocol":"http"}]'

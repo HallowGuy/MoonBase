@@ -219,6 +219,17 @@ services:
       timeout: 10s
       retries: 5
 
+  mongodb:
+    image: mongo:6
+    restart: unless-stopped
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.runCommand('ping').ok"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
   outline:
     image: outlinewiki/outline:latest
     environment:
@@ -279,6 +290,24 @@ services:
       timeout: 10s
       retries: 5
 
+  formio:
+    image: formio/formio:latest
+    restart: unless-stopped
+    environment:
+      MONGO: mongodb://mongodb:27017/formio
+      PORT: 3001
+    volumes:
+      - ./formio/formio.yml:/data/formio.yml:ro
+    depends_on:
+      - mongodb
+    ports:
+      - "${FORMIO_PORT:-3005}:3001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
   nginx:
     image: nginx:stable-alpine
     volumes:
@@ -298,6 +327,7 @@ services:
       - answer
       - metabase
       - typesense
+      - formio
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost"]
       interval: 30s
@@ -310,6 +340,7 @@ volumes:
   grafana-storage:
   typesense-data:
   filegator-data:
+  mongodb-data:
 
 secrets:
   postgres_user:

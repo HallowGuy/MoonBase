@@ -1,0 +1,3 @@
+SERVER_BASEPATH: /dashboards
+SERVER_REWRITEBASEPATH: "true"
+OPENSEARCH_HOSTS: "http://opensearch:9200"

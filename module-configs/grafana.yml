@@ -1,0 +1,10 @@
+GF_SERVER_ROOT_URL: http://localhost/grafana
+GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+GF_DATABASE_TYPE: postgres
+GF_DATABASE_HOST: postgres:5432
+GF_DATABASE_NAME: system_database
+GF_DATABASE_USER_FILE: /run/secrets/postgres_user
+GF_DATABASE_PASSWORD_FILE: /run/secrets/postgres_password
+GF_DATABASE_SSL_MODE: disable
+GF_DATABASE_SCHEMA: grafana
+GF_SECURITY_ADMIN_PASSWORD_FILE: /run/secrets/grafana_password

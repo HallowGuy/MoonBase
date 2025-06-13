@@ -1,0 +1,6 @@
+MB_DB_TYPE: postgres
+MB_DB_DBNAME: system_database
+MB_DB_PORT: 5432
+MB_DB_USER_FILE: /run/secrets/postgres_user
+MB_DB_PASS_FILE: /run/secrets/postgres_password
+MB_DB_HOST: postgres

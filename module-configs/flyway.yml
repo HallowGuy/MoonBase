@@ -1,0 +1,4 @@
+url: jdbc:postgresql://postgres:5432/system_database
+user_file: /run/secrets/postgres_user
+password_file: /run/secrets/postgres_password
+schemas: public,keycloak,app,grafana
