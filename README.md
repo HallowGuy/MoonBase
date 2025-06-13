@@ -1,7 +1,44 @@
 # MoonBase
 
-MoonBase est un environnement de travail modulaire orchestré avec Docker Compose. Il intègre des services de gestion de contenu, d’authentification, de monitoring, de recherche, de visualisation de données, ainsi que des applications front-end et back-end.
+This project provides a docker-compose stack with the following services:
 
+- **PostgreSQL** – database with schemas: `keycloak` for Keycloak, `app` for the
+  application tables and `grafana` for Grafana's own data.
+- **Keycloak** – authentication. The `keycloak` schema is reset on each start
+  and the realms from `keycloak/keycloak-realm.json`, `keycloak/realm-t1.json`
+  and `keycloak/realm-t2.json` are re-imported automatically. The additional
+  realm files create tenants **T1** and **T2** with a single user each.
+- **OpenSearch** and **OpenSearch Dashboards** – logging and search
+- **Prometheus** and **Grafana** – monitoring. Grafana stores its dashboards in
+  the `grafana` schema.
+- **NGINX** – reverse proxy
+- **Status page** – simple web page displaying service status
+- **Backend** – Go service powered by Echo
+- **Frontend** – React/Next.js UI styled with Tailwind CSS
+- **FileGator** – web file manager served from `/filegator/`
+- **Outline** – knowledge base accessible at `/outline/`
+- **Answer** – community Q&A at `/answer/`
+- **Typesense** – search engine used by Outline and Answer, API available at `/typesense/`
+- **Metabase** – analytics UI served from `/metabase/`
+- **Redis** – cache for Outline
+- **Form.io** – form builder served from `/formio/`
+- **MongoDB** – backing database for Form.io
+- The PostgreSQL instance initializes a database named `system_database`.
+  Application tables live under the `app` schema, Keycloak stores its data in
+  the `keycloak` schema and Grafana uses the `grafana` schema.
+
+Configuration for each module lives in a dedicated YAML file inside the
+`module-configs/` directory (for example `module-configs/formio.yml`). These
+files can be edited before launch to tweak service behavior.
+
+## Usage
+
+1. Ensure Docker and Docker Compose are installed.
+2. Run the stack. Docker Compose will build a small Keycloak image using
+   `keycloak/Dockerfile`. The container launches our `init.sh` script first
+   which now resolves database parameters from `KC_DB_URL` and calls Keycloak
+   via a relative path, so the setup works regardless of the installation
+   location:
 ## Services inclus
 
 - PostgreSQL : base de données unique avec plusieurs schémas (`app`, `keycloak`, `grafana`)
