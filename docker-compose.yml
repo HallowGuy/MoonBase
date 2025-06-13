@@ -23,17 +23,12 @@ services:
 
   flyway:
     image: flyway/flyway:latest
-    depends_on:
-      - postgres
-    command: >
-      -url=jdbc:postgresql://postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-system_database}
-      -user=$(cat /run/secrets/postgres_user)
-      -password=$(cat /run/secrets/postgres_password)
-      -connectRetries=10
-      -schemas=public,keycloak,app,grafana
-      migrate
     volumes:
       - ./db-init:/flyway/sql
+      - ./flyway/entrypoint.sh:/flyway/entrypoint.sh:ro
+    entrypoint: ["sh", "/flyway/entrypoint.sh"]
+    depends_on:
+      - postgres
     secrets:
       - postgres_user
       - postgres_password
@@ -186,7 +181,7 @@ services:
       retries: 5
 
   typesense:
-    image: typesense/typesense:latest
+    image: typesense/typesense:0.24.1
     command: ["--data-dir", "/data", "--api-key", "${TYPESENSE_API_KEY:-secret}"]
     volumes:
       - typesense-data:/data
@@ -236,8 +231,8 @@ services:
       DATABASE_URL: postgres://user:pass@postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-system_database}
       DATABASE_SSL: "false"
       REDIS_URL: redis://redis:6379
-      SECRET_KEY: "changeme"
-      UTILS_SECRET: "changeme"
+      SECRET_KEY_FILE: /run/secrets/outline_secret_key
+      UTILS_SECRET_FILE: /run/secrets/outline_utils_secret
       URL: http://localhost/outline
       TYPESENSE_API_KEY: ${TYPESENSE_API_KEY:-secret}
       TYPESENSE_NODES: '[{"host":"typesense","port":8108,"protocol":"http"}]'
@@ -245,6 +240,9 @@ services:
       - postgres
       - redis
       - typesense
+    secrets:
+      - outline_secret_key
+      - outline_utils_secret
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
@@ -344,12 +342,16 @@ volumes:
 
 secrets:
   postgres_user:
-    file: ${POSTGRES_USER_FILE:-./secrets/postgres_user.txt}
+    file: ./secrets/postgres_user.txt
   postgres_password:
-    file: ${POSTGRES_PASSWORD_FILE:-./secrets/postgres_password.txt}
+    file: ./secrets/postgres_password.txt
   keycloak_admin:
-    file: ${KEYCLOAK_ADMIN_FILE:-./secrets/keycloak_admin.txt}
+    file: ./secrets/keycloak_admin.txt
   keycloak_password:
-    file: ${KEYCLOAK_PASSWORD_FILE:-./secrets/keycloak_password.txt}
+    file: ./secrets/keycloak_password.txt
   grafana_password:
-    file: ${GRAFANA_PASSWORD_FILE:-./secrets/grafana_password.txt}
+    file: ./secrets/grafana_password.txt
+  outline_secret_key:
+    file: ./secrets/outline_secret_key.txt
+  outline_utils_secret:
+    file: ./secrets/outline_utils_secret.txt
