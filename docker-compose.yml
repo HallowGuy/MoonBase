@@ -45,61 +45,28 @@ services:
       - postgres
       - flyway
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.10
+  opensearch:
+    image: opensearchproject/opensearch:latest
     environment:
       discovery.type: single-node
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     volumes:
-      - esdata:/usr/share/elasticsearch/data
-      - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - osdata:/usr/share/opensearch/data
+      - ./opensearch/opensearch.yml:/usr/share/opensearch/config/opensearch.yml:ro
     restart: unless-stopped
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.17.10
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:latest
     environment:
-      SERVER_BASEPATH: /kibana
+      SERVER_BASEPATH: /dashboards
       SERVER_REWRITEBASEPATH: "true"
-      ELASTICSEARCH_USERNAME: ${ELASTIC_USERNAME:-elastic}
-      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
+      OPENSEARCH_HOSTS: ["http://opensearch:9200"]
     volumes:
-      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+      - ./opensearch-dashboards/opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml:ro
     depends_on:
-      - elasticsearch
+      - opensearch
     restart: unless-stopped
 
-  fleet-server:
-    image: docker.elastic.co/beats/elastic-agent:7.17.10
-    container_name: fleet-server
-    user: root
-    ports:
-      - "8220:8220"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-    environment:
-      FLEET_SERVER_ENABLE: "1"
-      FLEET_SERVER_ELASTICSEARCH_HOST: "http://elasticsearch:9200"
-      FLEET_URL: "http://172.0.0.1:8220"
-      FLEET_SERVER_SERVICE_TOKEN: "AAEAAWVsYXN0aWMvZmxlZXQtc2VydmVyL3Rva2VuLTE3NDk2NTg5Mzg2ODg6aG5yNnVHZDNTaHFSVmdIMFVpcE5WQQ"
-      FLEET_SERVER_POLICY_ID: "499b5aa7-d214-5b5d-838b-3cd76469844e"
-    depends_on:
-      - elasticsearch
-    restart: unless-stopped
 
-  elastic-agent:
-    image: docker.elastic.co/beats/elastic-agent:7.17.10
-    user: root
-    volumes:
-      - ./elastic-agent/elastic-agent.yml:/usr/share/elastic-agent/elastic-agent.yml:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-    environment:
-      ELASTIC_USERNAME: ${ELASTIC_USERNAME:-elastic}
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
-    depends_on:
-      - elasticsearch
-    restart: unless-stopped
 
   prometheus:
     image: prom/prometheus:latest
@@ -135,8 +102,8 @@ services:
     depends_on:
       - postgres
       - keycloak
-      - elasticsearch
-      - kibana
+      - opensearch
+      - opensearch-dashboards
       - prometheus
       - grafana
 
@@ -162,11 +129,11 @@ services:
     depends_on:
       - status
       - grafana
-      - kibana
+      - opensearch-dashboards
       - keycloak
       - prometheus
-      - elasticsearch
+      - opensearch
 
 volumes:
   pgdata:
-  esdata:
+  osdata:
