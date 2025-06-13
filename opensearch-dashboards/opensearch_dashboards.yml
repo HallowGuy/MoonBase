@@ -1,5 +1,33 @@
-server.host: "0.0.0.0"
-server.port: 5601
-server.basePath: "/dashboards"
-server.rewriteBasePath: true
-opensearch.hosts: ["http://opensearch:9200"]
+# Server settings
+server.host: "0.0.0.0"                    # Allows external access; consider using a specific IP or reverse proxy in production
+server.port: 5601                         # Default port
+server.basePath: "/dashboards"           # Custom path prefix
+server.rewriteBasePath: true             # Rewrite requests with basePath prefix
+server.shutdownTimeout: "5s"             # Graceful shutdown on termination signals
+
+# OpenSearch backend settings
+opensearch.hosts: ["http://moonbase-opensearch-1:9200"]  # Use container name, not IP
+
+# Optional: Increase retry resilience and logging
+opensearch.requestTimeout: 60000         # 60s timeout for backend requests
+opensearch.shardTimeout: 30000           # 30s shard operation timeout
+opensearch.pingTimeout: 1500             # 1.5s ping to check OpenSearch is reachable
+opensearch.ssl.verificationMode: "none"  # Disable SSL verification (only valid if using HTTP; use 'full' for HTTPS)
+
+# UI configuration
+opensearchDashboards.branding: "Intalio OpenSearch Dashboards"  # Optional: custom branding label
+uiSettings.overrides.defaultRoute: "/app/home"                  # Set default landing page
+
+# Logging
+logging.root.level: info                 # Options: trace, debug, info, warn, error, fatal
+logging.appenders.default:
+  type: console
+  layout:
+    type: json                           # Easier parsing in centralized logs
+
+# Security (optional, requires security plugin)
+# opensearch_security.auth.type: "basicauth"
+# opensearch_security.multitenancy.enabled: false
+
+# Misc (advanced robustness)
+status.allowAnonymous: false            # Disables unauthenticated access to /api/status

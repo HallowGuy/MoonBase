@@ -1,4 +1,51 @@
-plugins.security.disabled: true
+# ======================== OpenSearch Configuration =========================
+
+# Cluster and node identity
 cluster.name: moonbase
-node.name: single-node
-network.host: 0.0.0.0
+node.name: moonbase-single-node
+
+# Networking
+network.host: 0.0.0.0                   # Bind to all interfaces (change to specific IP in production)
+http.port: 9200
+transport.port: 9300
+
+# Node discovery - single-node mode
+discovery.type: single-node             # Ensures cluster bootstraps without peers
+
+# Path settings (optional, improves portability)
+# path.data: /usr/share/opensearch/data
+# path.logs: /usr/share/opensearch/logs
+
+# Memory locking (recommended for production)
+bootstrap.memory_lock: true
+
+# Logging (Optional - better log granularity)
+logger.level: info                      # Can be debug/info/warn/error
+logger.org.opensearch: info
+
+# ======================== Security Settings ================================
+
+# Disable security plugin (note: for dev only)
+plugins.security.disabled: true         # NOT recommended for production
+# If you need basic auth, TLS, and RBAC: set to `false` and configure security plugin
+
+# ======================== Performance Tuning (optional) ====================
+
+# Java heap size is controlled via environment variables (e.g. OPENSEARCH_JAVA_OPTS)
+# For example: -e OPENSEARCH_JAVA_OPTS="-Xms2g -Xmx2g"
+
+# Thread pools and queue sizes (optional fine-tuning)
+# thread_pool.write.queue_size: 1000
+# thread_pool.search.queue_size: 1000
+
+# ======================== HTTP Settings ====================================
+
+http.cors.enabled: true                 # Enable if frontend (e.g., Dashboards) is hosted elsewhere
+http.cors.allow-origin: "*"             # Use specific domain in production (e.g., "https://dashboards.mycompany.com")
+
+# ======================== Monitoring and APIs ==============================
+
+# Enable API extensions or management plugins if needed
+# plugins.index_state_management.enabled: true
+# plugins.alerting.enabled: true
+

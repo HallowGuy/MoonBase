@@ -1,12 +1,16 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres:15
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pass}
-      POSTGRES_DB: ${POSTGRES_DB:-system_database}
-      POSTGRES_HOST_AUTH_METHOD: trust  # à supprimer ou ajuster en production
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_DB: system_database
+    secrets:
+      - postgres_user
+      - postgres_password
     ports:
       - "5432:5432"
     volumes:
@@ -18,29 +22,37 @@ services:
       - postgres
     command: >
       -url=jdbc:postgresql://postgres:5432/system_database
-      -user=user
-      -password=pass
+      -user=$(cat /run/secrets/postgres_user)
+      -password=$(cat /run/secrets/postgres_password)
       -connectRetries=10
       -schemas=public,keycloak,app,grafana
       migrate
     volumes:
       - ./db-init:/flyway/sql
+    secrets:
+      - postgres_user
+      - postgres_password
 
   keycloak:
     build: ./keycloak
     restart: unless-stopped
     environment:
       KC_DB: postgres
-      KC_DB_URL: ${KC_DB_URL:-jdbc:postgresql://postgres:5432/system_database?currentSchema=keycloak}
-      KC_DB_USERNAME: ${KC_DB_USERNAME:-user}
-      KC_DB_PASSWORD: ${KC_DB_PASSWORD:-pass}
+      KC_DB_URL: jdbc:postgresql://postgres:5432/system_database?currentSchema=keycloak
+      KC_DB_USERNAME_FILE: /run/secrets/postgres_user
+      KC_DB_PASSWORD_FILE: /run/secrets/postgres_password
       KC_DB_SCHEMA: keycloak
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_ADMIN_FILE: /run/secrets/keycloak_admin
+      KEYCLOAK_ADMIN_PASSWORD_FILE: /run/secrets/keycloak_password
     volumes:
       - ./keycloak/keycloak-realm.json:/opt/keycloak/data/import/keycloak-realm.json:ro
       - ./keycloak/realm-t1.json:/opt/keycloak/data/import/realm-t1.json:ro
       - ./keycloak/realm-t2.json:/opt/keycloak/data/import/realm-t2.json:ro
+    secrets:
+      - postgres_user
+      - postgres_password
+      - keycloak_admin
+      - keycloak_password
     depends_on:
       - postgres
       - flyway
@@ -49,6 +61,10 @@ services:
     image: opensearchproject/opensearch:latest
     environment:
       discovery.type: single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     volumes:
       - osdata:/usr/share/opensearch/data
       - ./opensearch/opensearch.yml:/usr/share/opensearch/config/opensearch.yml:ro
@@ -65,8 +81,6 @@ services:
     depends_on:
       - opensearch
     restart: unless-stopped
-
-
 
   prometheus:
     image: prom/prometheus:latest
@@ -89,11 +103,18 @@ services:
       GF_SERVER_SERVE_FROM_SUB_PATH: "true"
       GF_DATABASE_TYPE: "postgres"
       GF_DATABASE_HOST: "postgres:5432"
-      GF_DATABASE_NAME: ${POSTGRES_DB:-system_database}
-      GF_DATABASE_USER: ${POSTGRES_USER:-user}
-      GF_DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-pass}
+      GF_DATABASE_NAME: system_database
+      GF_DATABASE_USER_FILE: /run/secrets/postgres_user
+      GF_DATABASE_PASSWORD_FILE: /run/secrets/postgres_password
       GF_DATABASE_SSL_MODE: "disable"
       GF_DATABASE_SCHEMA: "grafana"
+      GF_SECURITY_ADMIN_PASSWORD_FILE: /run/secrets/grafana_password
+    secrets:
+      - postgres_user
+      - postgres_password
+      - grafana_password
+    volumes:
+      - grafana-storage:/var/lib/grafana
 
   status:
     build: ./status
@@ -110,7 +131,7 @@ services:
   backend:
     build: ./backend
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgres://user:pass@postgres:5432/system_database?sslmode=disable&search_path=app}
+      DATABASE_URL: postgres://user:pass@postgres:5432/system_database?sslmode=disable&search_path=app
     depends_on:
       - postgres
 
@@ -120,7 +141,7 @@ services:
       - keycloak
 
   nginx:
-    image: nginx:latest
+    image: nginx:stable-alpine
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
@@ -137,3 +158,16 @@ services:
 volumes:
   pgdata:
   osdata:
+  grafana-storage:
+
+secrets:
+  postgres_user:
+    file: ./secrets/postgres_user.txt
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+  keycloak_admin:
+    file: ./secrets/keycloak_admin.txt
+  keycloak_password:
+    file: ./secrets/keycloak_password.txt
+  grafana_password:
+    file: ./secrets/grafana_password.txt
