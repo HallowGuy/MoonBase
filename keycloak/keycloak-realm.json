@@ -16,6 +16,14 @@
     {
       "clientId": "backend",
       "bearerOnly": true
+    },
+    {
+      "clientId": "opensearch",
+      "secret": "opensearch-secret",
+      "publicClient": false,
+      "redirectUris": [
+        "http://localhost/dashboards/auth/openid/login"
+      ]
     }
   ]
 }
