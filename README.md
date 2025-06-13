@@ -45,5 +45,29 @@ This project provides a docker-compose stack with the following services:
    Grafana, Prometheus and OpenSearch Dashboards are served from `/grafana/`, `/prometheus/`
    and `/dashboards/` respectively after logging into Keycloak.
 5. The application UI is served from `/app/` and the API endpoint returning
- "Welcome to the home page" is available at `/api/home`.
+"Welcome to the home page" is available at `/api/home`.
+
+## Integrating OpenSearch with Keycloak
+
+OpenSearch runs with the security plugin disabled by default. To enable
+Keycloak authentication for both OpenSearch and OpenSearch Dashboards:
+
+1. In Keycloak create a new confidential client named `opensearch` and set its
+   redirect URI to `http://localhost/dashboards/auth/openid/login`.
+2. Remove `plugins.security.disabled: true` from `opensearch/opensearch.yml` and
+   configure the security plugin for OpenID Connect:
+
+   ```yaml
+   plugins.security.auth.type: openid
+   plugins.security.openid.connect_url: http://keycloak:8080/realms/moonbase/.well-known/openid-configuration
+   plugins.security.openid.client_id: opensearch
+   plugins.security.openid.client_secret: <client-secret>
+   plugins.security.openid.base_redirect_url: http://localhost/dashboards
+   ```
+3. Add the same OpenID details in
+   `opensearch-dashboards/opensearch_dashboards.yml` using the
+   `opensearch_security.openid.*` keys.
+4. Restart the containers with `docker compose up -d` and open `/dashboards/`.
+   You will be redirected to Keycloak and then back to OpenSearch Dashboards
+   after authentication.
 
