@@ -59,7 +59,7 @@ services:
     environment:
       SERVER_BASEPATH: /dashboards
       SERVER_REWRITEBASEPATH: "true"
-      OPENSEARCH_HOSTS: ["http://opensearch:9200"]
+      OPENSEARCH_HOSTS: '["http://opensearch:9200"]'
     volumes:
       - ./opensearch-dashboards/opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml:ro
     depends_on:
