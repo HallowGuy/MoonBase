@@ -1,197 +1,161 @@
-# MoonBase
+<div align="center">
+    <a href="https://frappe.io/erpnext">
+	<img src="./erpnext/public/images/v16/erpnext.svg" alt="ERPNext Logo" height="80px" width="80xp"/>
+    </a>
+    <h2>ERPNext</h2>
+    <p align="center">
+        <p>Powerful, Intuitive and Open-Source ERP</p>
+    </p>
 
-This project provides a docker-compose stack with the following services:
+[![Learn on Frappe School](https://img.shields.io/badge/Frappe%20School-Learn%20ERPNext-blue?style=flat-square)](https://frappe.school)<br><br>
+[![CI](https://github.com/frappe/erpnext/actions/workflows/server-tests-mariadb.yml/badge.svg?event=schedule)](https://github.com/frappe/erpnext/actions/workflows/server-tests-mariadb.yml)
+[![docker pulls](https://img.shields.io/docker/pulls/frappe/erpnext-worker.svg)](https://hub.docker.com/r/frappe/erpnext-worker)
 
-- **PostgreSQL** – database with schemas: `keycloak` for Keycloak, `app` for the
-  application tables and `grafana` for Grafana's own data.
-- **Keycloak** – authentication. The `keycloak` schema is reset on each start
-  and the realms from `keycloak/keycloak-realm.json`, `keycloak/realm-t1.json`
-  and `keycloak/realm-t2.json` are re-imported automatically. The additional
-  realm files create tenants **T1** and **T2** with a single user each.
-- **OpenSearch** and **OpenSearch Dashboards** – logging and search
-- **Prometheus** and **Grafana** – monitoring. Grafana stores its dashboards in
-  the `grafana` schema.
-- **NGINX** – reverse proxy
-- **Status page** – simple web page displaying service status
-- **Backend** – Go service powered by Echo
-- **Frontend** – React/Next.js UI styled with Tailwind CSS
-- **FileGator** – web file manager served from `/filegator/`
-- **Outline** – knowledge base accessible at `/outline/`
-- **Answer** – community Q&A at `/answer/`
-- **Typesense** – search engine used by Outline and Answer, API available at `/typesense/`
-- **Metabase** – analytics UI served from `/metabase/`
-- **Redis** – cache for Outline
-- **Form.io** – form builder served from `/formio/`
-- **MongoDB** – backing database for Form.io
-- The PostgreSQL instance initializes a database named `system_database`.
-  Application tables live under the `app` schema, Keycloak stores its data in
-  the `keycloak` schema and Grafana uses the `grafana` schema.
+</div>
 
-Configuration for each module lives in its own folder under `module-configs/`.
-For example the Form.io service uses `module-configs/formio/formio.yml`.
-These files can be edited before launch to tweak service behavior.
+<div align="center">
+	<img src="./erpnext/public/images/v16/hero_image.png"/>
+</div>
 
-## Usage
+<div align="center">
+	<a href="https://erpnext-demo.frappe.cloud/api/method/erpnext_demo.erpnext_demo.auth.login_demo">Live Demo</a>
+	-
+	<a href="https://frappe.io/erpnext">Website</a>
+	-
+	<a href="https://docs.frappe.io/erpnext/">Documentation</a>
+</div>
 
-1. Ensure Docker and Docker Compose are installed.
-2. Run the stack. Docker Compose will build a small Keycloak image using
-   `keycloak/Dockerfile`. The container launches our `init.sh` script first
-   which now resolves database parameters from `KC_DB_URL` and calls Keycloak
-   via a relative path, so the setup works regardless of the installation
-   location:
-## Services inclus
+## ERPNext
 
-- PostgreSQL : base de données unique avec plusieurs schémas (`app`, `keycloak`, `grafana`)
-- Keycloak : serveur d’identité et d’authentification multi-tenant (tenants T1 et T2)
-- OpenSearch : moteur de recherche et d’indexation
-- OpenSearch Dashboards : visualisation et analyse des données OpenSearch
-- Prometheus : collecte et agrégation de métriques
-- Grafana : tableaux de bord de visualisation
-- NGINX : reverse proxy et point d’entrée unique
-- Status Page : interface web listant les statuts des services
-- Backend : API REST développée avec Go (framework Echo)
-- Frontend : interface utilisateur en React / Next.js
-- FileGator : gestionnaire de fichiers web
-- Outline : base de connaissances collaborative
-- Answer : plateforme de questions-réponses communautaire
-- Typesense : moteur de recherche typé utilisé par Outline et Answer
-- Metabase : outil de Business Intelligence
-- Redis : système de cache utilisé par Outline
+100% Open-Source ERP system to help you run your business.
 
-## Prérequis
+### Motivation
 
-- Docker et Docker Compose installés
-- Fichier `.env.production` correctement renseigné
-- Secrets Docker présents dans le répertoire `./secrets`
+Running a business is a complex task - handling invoices, tracking stock, managing personnel and even more ad-hoc activities. In a market where software is sold separately to manage each of these tasks, ERPNext does all of the above and more, for free.
 
-## Lancement
+### Key Features
 
-1. Initialiser les éventuels sous-modules Git si nécessaires :
-   ```bash
-   git submodule update --init --recursive
+- **Accounting**: All the tools you need to manage cash flow in one place, right from recording transactions to summarizing and analyzing financial reports.
+- **Order Management**: Track inventory levels, replenish stock, and manage sales orders, customers, suppliers, shipments, deliverables, and order fulfillment.
+- **Manufacturing**: Simplifies the production cycle, helps track material consumption, exhibits capacity planning, handles subcontracting, and more!
+- **Asset Management**: From purchase to perishment, IT infrastructure to equipment. Cover every branch of your organization, all in one centralized system.
+- **Projects**: Delivery both internal and external Projects on time, budget and Profitability. Track tasks, timesheets, and issues by project.
 
-Construire les images :
+<details open>
 
-bash
-Copier
-Modifier
-make build
-Lancer la stack :
+<summary>More</summary>
+	<img src="https://erpnext.com/files/v16_bom.png"/>
+	<img src="https://erpnext.com/files/v16_stock_summary.png"/>
+	<img src="https://erpnext.com/files/v16_job_card.png"/>
+	<img src="https://erpnext.com/files/v16_tasks.png"/>
+</details>
 
-bash
-Copier
-Modifier
-make up
-Vérifier les journaux :
+### Under the Hood
 
-bash
-Copier
-Modifier
-make logs
-Accéder à l’interface via : http://localhost/
+- [**Frappe Framework**](https://github.com/frappe/frappe): A full-stack web application framework written in Python and Javascript. The framework provides a robust foundation for building web applications, including a database abstraction layer, user authentication, and a REST API.
 
-Chemins d’accès aux services
-Interface NGINX : http://localhost/
+- [**Frappe UI**](https://github.com/frappe/frappe-ui): A Vue-based UI library, to provide a modern user interface. The Frappe UI library provides a variety of components that can be used to build single-page applications on top of the Frappe Framework.
 
-Page de statut : http://localhost/status/
+## Production Setup
 
-API Backend : http://localhost/api/home
+### Managed Hosting
 
-Interface Frontend : http://localhost/app/
+You can try [Frappe Cloud](https://frappecloud.com), a simple, user-friendly and sophisticated [open-source](https://github.com/frappe/press) platform to host Frappe applications with peace of mind.
 
-OpenSearch Dashboards : http://localhost/dashboards/
+It takes care of installation, setup, upgrades, monitoring, maintenance and support of your Frappe deployments. It is a fully featured developer platform with an ability to manage and control multiple Frappe deployments.
 
-Grafana : http://localhost/grafana/
+<div>
+	<a href="https://erpnext-demo.frappe.cloud/app/home" target="_blank">
+		<picture>
+			<source media="(prefers-color-scheme: dark)" srcset="https://frappe.io/files/try-on-fc-white.png">
+			<img src="https://frappe.io/files/try-on-fc-black.png" alt="Try on Frappe Cloud" height="28" />
+		</picture>
+	</a>
+</div>
 
-Prometheus : http://localhost/prometheus/
 
-FileGator : http://localhost/filegator/
 
-Outline : http://localhost/outline/
+### Self-Hosted
+#### Docker
 
-Answer : http://localhost/answer/
+Prerequisites: docker, docker-compose, git. Refer [Docker Documentation](https://docs.docker.com) for more details on Docker setup.
 
-Metabase : http://localhost/metabase/
+Run following commands:
 
-Typesense API : http://localhost/typesense/
+```
+git clone https://github.com/frappe/frappe_docker
+cd frappe_docker
+docker compose -f pwd.yml up -d
+```
 
-Authentification
-Utilisateur realm T1 : identifiant T1, mot de passe password
+After a couple of minutes, site should be accessible on your localhost port: 8080. Use below default login credentials to access the site.
+- Username: Administrator
+- Password: admin
 
-Utilisateur realm T2 : identifiant T2, mot de passe password
+See [Frappe Docker](https://github.com/frappe/frappe_docker?tab=readme-ov-file#to-run-on-arm64-architecture-follow-this-instructions) for ARM based docker setup.
 
-Interface de login redirigée via Keycloak
 
-Secrets attendus
-Les fichiers de secrets doivent être présents dans ./secrets :
+## Development Setup
+### Manual Install
 
-postgres_user.txt
+The Easy Way: our install script for bench will install all dependencies (e.g. MariaDB). See https://github.com/frappe/bench for more details.
 
-postgres_password.txt
+New passwords will be created for the ERPNext "Administrator" user, the MariaDB root user, and the frappe user (the script displays the passwords and saves them to ~/frappe_passwords.txt).
 
-keycloak_admin.txt
 
-keycloak_password.txt
+### Local
 
-grafana_password.txt
+To setup the repository locally follow the steps mentioned below:
 
-outline_secret_key.txt
+1. Setup bench by following the [Installation Steps](https://frappeframework.com/docs/user/en/installation) and start the server
+   ```
+   bench start
+   ```
 
-outline_utils_secret.txt
+2. In a separate terminal window, run the following commands:
+   ```
+   # Create a new site
+   bench new-site erpnext.localhost
+   ```
 
-Ces secrets sont référencés via des variables Docker dans le fichier .env.production.
+3. Get the ERPNext app and install it
+   ```
+   # Get the ERPNext app
+   bench get-app https://github.com/frappe/erpnext
 
-Exemple de fichier .env.production
-Un exemple complet est disponible dans ce dépôt et contient toutes les variables attendues par les services.
+   # Install the app
+   bench --site erpnext.localhost install-app erpnext
+   ```
 
-Configuration OpenSearch avec Keycloak (optionnel)
-Créer un client opensearch dans Keycloak avec URI de redirection http://localhost/dashboards/auth/openid/login
+4. Open the URL `http://erpnext.localhost:8000/app` in your browser, you should see the app running
 
-Retirer plugins.security.disabled: true de opensearch.yml
+## Learning and community
 
-Ajouter la configuration suivante :
+1. [Frappe School](https://school.frappe.io) - Learn Frappe Framework and ERPNext from the various courses by the maintainers or from the community.
+2. [Official documentation](https://docs.erpnext.com/) - Extensive documentation for ERPNext.
+3. [Discussion Forum](https://discuss.erpnext.com/) - Engage with community of ERPNext users and service providers.
+4. [Telegram Group](https://erpnext_public.t.me) - Get instant help from huge community of users.
 
-yaml
-Copier
-Modifier
-plugins.security.auth.type: openid
-plugins.security.openid.connect_url: http://keycloak:8080/realms/moonbase/.well-known/openid-configuration
-plugins.security.openid.client_id: opensearch
-plugins.security.openid.client_secret: <secret>
-plugins.security.openid.base_redirect_url: http://localhost/dashboards
-Appliquer une configuration équivalente dans opensearch_dashboards.yml
 
-Redémarrer les services concernés avec make restart
+## Contributing
 
-Volumes Docker
-pgdata : données PostgreSQL
+1. [Issue Guidelines](https://github.com/frappe/erpnext/wiki/Issue-Guidelines)
+1. [Report Security Vulnerabilities](https://erpnext.com/security)
+1. [Pull Request Requirements](https://github.com/frappe/erpnext/wiki/Contribution-Guidelines)
+2. [Translations](https://crowdin.com/project/frappe)
 
-osdata : données OpenSearch
 
-grafana-storage : dashboards Grafana
+## Logo and Trademark Policy
 
-typesense-data : données Typesense
+Please read our [Logo and Trademark Policy](TRADEMARK_POLICY.md).
 
-filegator-data : fichiers utilisateurs FileGator
-
-Commandes Makefile disponibles
-make build : build des images
-
-make up : démarrage des services
-
-make down : arrêt complet et suppression des volumes
-
-make restart : redémarrage complet
-
-make logs : affichage des logs
-
-make status : affichage des conteneurs en cours
-
-make prune : nettoyage complet Docker (volumes, réseaux, images)
-
-Notes
-Tous les services sont servis par NGINX via des chemins personnalisés
-
-L’environnement est conçu pour être modulaire, sécurisé, multi-tenant et évolutif
-
-L’infrastructure respecte une approche orientée microservices avec authentification centralisée via Keycloak
+<br />
+<br />
+<div align="center" style="padding-top: 0.75rem;">
+	<a href="https://frappe.io" target="_blank">
+		<picture>
+			<source media="(prefers-color-scheme: dark)" srcset="https://frappe.io/files/Frappe-white.png">
+			<img src="https://frappe.io/files/Frappe-black.png" alt="Frappe Technologies" height="28"/>
+		</picture>
+	</a>
+</div>
