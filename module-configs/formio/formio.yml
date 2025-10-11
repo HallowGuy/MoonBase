@@ -1,3 +1,0 @@
-# Form.io configuration file
-mongo: mongodb://mongodb:27017/formio
-port: 3001
